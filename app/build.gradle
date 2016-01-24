@@ -1,9 +1,27 @@
 apply plugin: 'com.android.application'
 
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+def AAVersion = '3.3.2'
+
+
 android {
+    signingConfigs {
+        dbug {
+            keyAlias 'key'
+            keyPassword '3718509654'
+            storeFile file('C:/Users/rbech/Dropbox/SCRUMcompanion/PROJECT/KEYSTORE.jks')
+            storePassword '3718509654'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "com.colinearproductions.scrumcompanion"
         minSdkVersion 15
@@ -16,13 +34,29 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.dbug
+        }
     }
 }
 
+
+
+
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
-
     compile 'com.mcxiaoke.volley:library:1.0.19'
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
+    compile 'com.google.android.gms:play-services-auth:8.4.0'
+    compile 'com.google.android.gms:play-services-drive:8.4.0'
+}
+
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0]?.processResources?.manifestFile
+    }
 }
