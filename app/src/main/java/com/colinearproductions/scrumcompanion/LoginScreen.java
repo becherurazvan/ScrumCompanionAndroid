@@ -57,6 +57,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(Drive.SCOPE_FILE)
                 .requestServerAuthCode("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com", false)// WEB CLIENT ID HERE, ANDROID CLIENT ID IN JSon
+                .requestIdToken("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -102,22 +103,18 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
     }
-    // [END onActivityResult]
 
-    // [START handleSignInResult]
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            Log.i(TAG,acct.getDisplayName() + " EMAIL: " + acct.getEmail() + " server auth code: " + acct.getServerAuthCode());
+            Log.i(TAG,acct.getDisplayName() + " EMAIL: " + acct.getEmail() + " server auth code: " + acct.getServerAuthCode() + " Authentication token " + acct.getIdToken());
         } else {
             Log.i(TAG,result.getStatus().toString());
         }
@@ -143,8 +140,6 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
-        // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
