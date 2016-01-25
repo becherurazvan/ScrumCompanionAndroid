@@ -9,7 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,13 +34,18 @@ import com.google.android.gms.drive.Drive;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import Requests.LoginRequest;
 import VolleyClasses.VolleySingleton;
 
 
 @EActivity
-public class LoginScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,View.OnClickListener{
+public class LoginScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
 
     @ViewById(R.id.logoText1)
@@ -67,7 +77,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         objectMapper = new ObjectMapper();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Drive.SCOPE_FILE)
+                .requestScopes(new Scope("https://www.googleapis.com/auth/drive"))
                 .requestServerAuthCode("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com", false)// WEB CLIENT ID HERE, ANDROID CLIENT ID IN JSon
                 .requestIdToken("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com")
                 .requestEmail()
@@ -126,12 +136,14 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            Log.i(TAG,acct.getDisplayName() + " EMAIL: " + acct.getEmail() + " server auth code: " + acct.getServerAuthCode() + " Authentication token " + acct.getIdToken());
+            Log.i(TAG, acct.getDisplayName() + " EMAIL: " + acct.getEmail() + " server auth code: " + acct.getServerAuthCode() + " Authentication token " + acct.getIdToken());
 
 
             try {
                 succesfullySignedIn(acct);
             } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
@@ -177,16 +189,31 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         }
     }
 
-    public void succesfullySignedIn(GoogleSignInAccount acc) throws JsonProcessingException {
+    public void succesfullySignedIn(GoogleSignInAccount acc) throws JsonProcessingException, JSONException {
 
 
+        LoginRequest loginRequest = new LoginRequest(acc.getEmail(), acc.getServerAuthCode(), acc.getIdToken());
+        String jsonLoginRequest = objectMapper.writeValueAsString(loginRequest);
+
+        JSONObject jsonBody = new JSONObject(jsonLoginRequest);
+        String url = "http://10.32.188.82:4567/login";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,url,jsonBody, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.i(TAG,"respons: " +response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG,"Erorr" + error.toString());
 
 
+            }
+        });
 
-            LoginRequest loginRequest = new LoginRequest(acc.getEmail(),acc.getServerAuthCode(),acc.getIdToken());
-            String jsonLoginRequest  = objectMapper.writeValueAsString(loginRequest);
-
-            Log.i(TAG,"Request: " + jsonLoginRequest);
+        Log.i(TAG, "Request: " + jsonLoginRequest);
+        queue.add(jsonObjectRequest);
 
     }
 
