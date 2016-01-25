@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -25,6 +29,9 @@ import com.google.android.gms.drive.Drive;
 
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+
+import Requests.LoginRequest;
+import VolleyClasses.VolleySingleton;
 
 
 @EActivity
@@ -46,6 +53,8 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
 
     private GoogleApiClient mGoogleApiClient;
 
+    RequestQueue queue;
+    ObjectMapper objectMapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +62,9 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         setContentView(R.layout.activity_login_screen);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.logout_button).setOnClickListener(this);
+
+        queue = VolleySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
+        objectMapper = new ObjectMapper();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(Drive.SCOPE_FILE)
@@ -115,8 +127,17 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.i(TAG,acct.getDisplayName() + " EMAIL: " + acct.getEmail() + " server auth code: " + acct.getServerAuthCode() + " Authentication token " + acct.getIdToken());
+
+
+            try {
+                succesfullySignedIn(acct);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+
         } else {
-            Log.i(TAG,result.getStatus().toString());
+            Log.i(TAG, result.getStatus().toString());
         }
     }
 
@@ -144,7 +165,6 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     }
 
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -156,4 +176,18 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
                 break;
         }
     }
+
+    public void succesfullySignedIn(GoogleSignInAccount acc) throws JsonProcessingException {
+
+
+
+
+
+            LoginRequest loginRequest = new LoginRequest(acc.getEmail(),acc.getServerAuthCode(),acc.getIdToken());
+            String jsonLoginRequest  = objectMapper.writeValueAsString(loginRequest);
+
+            Log.i(TAG,"Request: " + jsonLoginRequest);
+
+    }
+
 }

@@ -38,6 +38,12 @@ android {
             signingConfig signingConfigs.dbug
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 
@@ -52,6 +58,14 @@ dependencies {
     compile "org.androidannotations:androidannotations-api:$AAVersion"
     compile 'com.google.android.gms:play-services-auth:8.4.0'
     compile 'com.google.android.gms:play-services-drive:8.4.0'
+
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.0'
+
+
+
+
+
+
 }
 
 
