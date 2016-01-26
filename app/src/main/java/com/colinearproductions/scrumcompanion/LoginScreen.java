@@ -69,9 +69,16 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     RequestQueue queue;
     ObjectMapper objectMapper;
 
+    String email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        //Intent i = new Intent(this,InvitesScreen_.class);
+       // startActivity(i);
+
         setContentView(R.layout.activity_login_screen);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.logout_button).setOnClickListener(this);
@@ -101,7 +108,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     @Override
     public void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+       // mGoogleApiClient.connect();
 
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
@@ -197,6 +204,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
 
         LoginRequest loginRequest = new LoginRequest(acc.getEmail(), acc.getServerAuthCode(), acc.getIdToken());
         String jsonLoginRequest = objectMapper.writeValueAsString(loginRequest);
+        email = acc.getEmail();
 
         JSONObject jsonBody = new JSONObject(jsonLoginRequest);
         String url = "http://10.32.188.82:4567/login";
@@ -236,6 +244,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
 
             }else{
                 Intent i = new Intent(this,InvitesScreen_.class);
+                i.putExtra("email",email);
                 startActivity(i);
             }
         }
