@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -37,10 +38,12 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import Requests.LoginRequest;
+import Requests.LoginResponse;
 import VolleyClasses.VolleySingleton;
 
 
@@ -78,7 +81,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope("https://www.googleapis.com/auth/drive"))
-                .requestServerAuthCode("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com", false)// WEB CLIENT ID HERE, ANDROID CLIENT ID IN JSon
+                .requestServerAuthCode("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com", true)// WEB CLIENT ID HERE, ANDROID CLIENT ID IN JSon
                 .requestIdToken("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
@@ -201,6 +204,14 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,url,jsonBody, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
+                LoginResponse loginResponse = null;
+                try {
+                    loginResponse = objectMapper.readValue(response.toString(), LoginResponse.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                succesfullySignedToServer(loginResponse);
                 Log.i(TAG,"respons: " +response.toString());
             }
         }, new Response.ErrorListener() {
@@ -217,4 +228,21 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
 
     }
 
+    public void succesfullySignedToServer(LoginResponse response){
+        toast(response.getGreeting());
+        if(response.isLoginSuccesful()){
+            if(response.partOfTeam)
+            {
+
+            }else{
+                Intent i = new Intent(this,InvitesScreen_.class);
+                startActivity(i);
+            }
+        }
+    }
+
+
+    public void toast(String t ){
+        Toast.makeText(getApplicationContext(),t,Toast.LENGTH_SHORT).show();
+    }
 }
