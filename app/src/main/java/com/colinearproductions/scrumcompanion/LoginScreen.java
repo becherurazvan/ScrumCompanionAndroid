@@ -62,6 +62,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
 
 
     private static final String TAG = "SignInActivity";
+    private static final String s = "S";
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleApiClient mGoogleApiClient;
@@ -108,7 +109,9 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     @Override
     public void onStart() {
         super.onStart();
-       // mGoogleApiClient.connect();
+        mGoogleApiClient.connect();
+
+        Log.i(TAG+s,"On start is connected? : " + mGoogleApiClient.isConnected() + " is connecting? "  +mGoogleApiClient.isConnecting());
 
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
@@ -125,13 +128,28 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         }
     }
 
+
     @Override
-    protected void onStop() {
-        super.onStop();
-        mGoogleApiClient.disconnect();
+    protected void onResume() {
+        Log.i(TAG+s, "On resume is connected? : " + mGoogleApiClient.isConnected() + " is connecting? " + mGoogleApiClient.isConnecting());
+        super.onResume();
     }
 
-    // [START onActivityResult]
+    @Override
+    protected void onStop() {
+
+        mGoogleApiClient.disconnect();
+        Log.i(TAG+s, "On stop is connected? : " + mGoogleApiClient.isConnected() + " is connecting? " + mGoogleApiClient.isConnecting());
+        super.onStop();
+    }
+
+
+    @Override
+    protected void onPause() {
+        Log.i(TAG+s, "On pause is connected? : " + mGoogleApiClient.isConnected() + " is connecting? " + mGoogleApiClient.isConnecting());
+        super.onPause();
+    }
+// [START onActivityResult]
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -254,4 +272,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     public void toast(String t ){
         Toast.makeText(getApplicationContext(),t,Toast.LENGTH_SHORT).show();
     }
+
+
+
 }

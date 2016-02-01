@@ -6,7 +6,69 @@
     android:orientation="vertical"
     tools:context="com.colinearproductions.scrumcompanion.InvitesScreen"
     android:background="#ffd83b"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Got an invitation code?"
+        android:id="@+id/invitationsText"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#606061"
+        android:singleLine="true"
+        android:layout_marginTop="10dp"
+        android:textSize="27dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/invitationCodeEditText"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#4f4f4f"
+        android:textSize="50sp"
+        android:textAlignment="center"
+        android:hint="INV_0000"
+        android:layout_marginBottom="10dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#ffffff" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Join"
+            android:id="@+id/joinButton"
+            android:layout_gravity="center"
+            android:textColor="#606061"
+            android:gravity="center_vertical|center_horizontal"
+            android:textSize="23dp" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/black"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Or create a new project"
+        android:id="@+id/createProjectLabelText"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#606061"
+        android:singleLine="true"
+        android:layout_marginTop="10dp"
+        android:textSize="27dp"
+        android:layout_marginBottom="20dp" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -26,140 +88,4 @@
             android:textSize="23dp" />
     </FrameLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@android:color/black"
-        android:layout_marginTop="20dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Invitations"
-        android:id="@+id/invitationsText"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#606061"
-        android:singleLine="true"
-        android:layout_marginTop="10dp"
-        android:textSize="27dp" />
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:background="#ffffff">
-
-        <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_gravity="center_horizontal">
-
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/imageView2"
-            android:background="@drawable/logo"
-            android:layout_margin="10dp" />
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Mark invited you in"
-                android:id="@+id/inviter1text"
-                android:textColor="#606061"
-                android:textSize="18dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="project &quot;Face e-book&quot;"
-                android:id="@+id/project1text"
-                android:textColor="#606061"
-                android:textSize="18dp" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@android:color/black"
-            />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:id="@+id/imageView3"
-                android:background="@drawable/logo"
-                android:layout_margin="10dp" />
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Bill invited you in"
-                    android:id="@+id/inviter2text"
-                    android:textColor="#606061"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="project &quot;Nanosoft&quot;"
-                    android:id="@+id/project2text"
-                    android:textColor="#606061"
-                    android:textSize="18dp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@android:color/black"
-            />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Got invite code"
-                android:id="@+id/noInviteText"
-                android:layout_gravity="center_horizontal|bottom"
-                android:textColor="#ffd83b"
-                android:textSize="25dp"
-                android:padding="20dp"
-                android:layout_marginBottom="10dp"
-                android:background="#161616" />
-        </FrameLayout>
-
-    </LinearLayout>
 </LinearLayout>
