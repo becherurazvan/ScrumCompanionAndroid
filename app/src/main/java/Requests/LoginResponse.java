@@ -1,27 +1,24 @@
 package Requests;
 
 
-public class LoginResponse {
-    public String greeting;
-    public boolean loginSuccesful;
-    public boolean partOfTeam;
-    public boolean gotInvites;
+public class LoginResponse extends Response {
+    boolean partOfTeam;
+    String projectId;
 
 
-
-    public String getGreeting() {
-        return greeting;
+    public LoginResponse(String greeting, boolean loginSuccesful, boolean partOfTeam,String projectId) {
+        super(loginSuccesful,greeting);
+        this.partOfTeam = partOfTeam;
+        this.projectId = projectId;
     }
 
-    public boolean isLoginSuccesful() {
-        return loginSuccesful;
-    }
+    public LoginResponse(){}
 
     public boolean isPartOfTeam() {
         return partOfTeam;
     }
 
-    public boolean isGotInvites() {
-        return gotInvites;
+    public String getProjectId() {
+        return projectId;
     }
 }

@@ -9,7 +9,7 @@ public class Project {
 
 
     ArrayList<String> invitedUsers;
-    int id;
+    String id;
     String title;
     String leaderEmail;
     String invitationCode;
@@ -20,7 +20,7 @@ public class Project {
         return invitedUsers;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

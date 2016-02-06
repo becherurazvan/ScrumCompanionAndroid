@@ -1,30 +1,25 @@
 package com.colinearproductions.scrumcompanion;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
@@ -39,12 +34,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import Requests.LoginRequest;
+
 import Requests.LoginResponse;
 import VolleyClasses.VolleySingleton;
+import gcm.MyRegistrationIntentService;
 
 
 @EActivity
@@ -60,7 +54,8 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     @ViewById(R.id.sign_in_button)
     SignInButton signInButton;
 
-
+    public static final String LOGIN_URL = "http://10.32.188.82:4567/user/login";
+    public static final String SERVER_CLIENT_ID = "735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com";
     private static final String TAG = "SignInActivity";
     private static final String s = "S";
     private static final int RC_SIGN_IN = 9001;
@@ -70,26 +65,22 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     RequestQueue queue;
     ObjectMapper objectMapper;
 
-    String email;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        //Intent i = new Intent(this,InvitesScreen_.class);
-       // startActivity(i);
+        getRegistrationToken(); // GCM
 
         setContentView(R.layout.activity_login_screen);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.logout_button).setOnClickListener(this);
+
 
         queue = VolleySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
         objectMapper = new ObjectMapper();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(new Scope("https://www.googleapis.com/auth/drive"))
-                .requestServerAuthCode("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com", true)// WEB CLIENT ID HERE, ANDROID CLIENT ID IN JSon
+                //.requestScopes(new Scope("https://www.googleapis.com/auth/drive"))
+                //.requestServerAuthCode("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com", true)// WEB CLIENT ID HERE, ANDROID CLIENT ID IN JSon
                 .requestIdToken("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
@@ -97,7 +88,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .addApi(Drive.API)
+               // .addApi(Drive.API)
                 .build();
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
@@ -109,10 +100,6 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     @Override
     public void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
-
-        Log.i(TAG+s,"On start is connected? : " + mGoogleApiClient.isConnected() + " is connecting? "  +mGoogleApiClient.isConnecting());
-
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
             Log.d(TAG, "Got cached sign-in");
@@ -128,28 +115,6 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         }
     }
 
-
-    @Override
-    protected void onResume() {
-        Log.i(TAG+s, "On resume is connected? : " + mGoogleApiClient.isConnected() + " is connecting? " + mGoogleApiClient.isConnecting());
-        super.onResume();
-    }
-
-    @Override
-    protected void onStop() {
-
-        mGoogleApiClient.disconnect();
-        Log.i(TAG+s, "On stop is connected? : " + mGoogleApiClient.isConnected() + " is connecting? " + mGoogleApiClient.isConnecting());
-        super.onStop();
-    }
-
-
-    @Override
-    protected void onPause() {
-        Log.i(TAG+s, "On pause is connected? : " + mGoogleApiClient.isConnected() + " is connecting? " + mGoogleApiClient.isConnecting());
-        super.onPause();
-    }
-// [START onActivityResult]
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -158,15 +123,11 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
             handleSignInResult(result);
         }
     }
-
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.i(TAG, acct.getDisplayName() + " EMAIL: " + acct.getEmail() + " server auth code: " + acct.getServerAuthCode() + " Authentication token " + acct.getIdToken());
-
-
             try {
                 succesfullySignedIn(acct);
             } catch (JsonProcessingException e) {
@@ -185,25 +146,10 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-
-    private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-
-                        Log.i(TAG, "Logged out");
-
-                    }
-                });
-    }
-
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
-
 
     @Override
     public void onClick(View v) {
@@ -211,67 +157,67 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
             case R.id.sign_in_button:
                 signIn();
                 break;
-            case R.id.logout_button:
-                signOut();
-                break;
         }
     }
 
     public void succesfullySignedIn(GoogleSignInAccount acc) throws JsonProcessingException, JSONException {
 
-
-        LoginRequest loginRequest = new LoginRequest(acc.getEmail(), acc.getServerAuthCode(), acc.getIdToken());
+        Requests.Request loginRequest = new Requests.Request(acc.getIdToken());
         String jsonLoginRequest = objectMapper.writeValueAsString(loginRequest);
-        email = acc.getEmail();
 
         JSONObject jsonBody = new JSONObject(jsonLoginRequest);
-        String url = "http://10.32.188.82:4567/login";
+        String url = LOGIN_URL;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,url,jsonBody, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-                LoginResponse loginResponse = null;
                 try {
-                    loginResponse = objectMapper.readValue(response.toString(), LoginResponse.class);
+                    succesfullySignedToServer(objectMapper.readValue(response.toString(), LoginResponse.class));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                succesfullySignedToServer(loginResponse);
-                Log.i(TAG,"respons: " +response.toString());
+                Log.i(TAG, "Login Response: " + response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG,"Erorr" + error.toString());
-
-
+                Log.i(TAG, "Erorr" + error.toString());
             }
         });
-
         Log.i(TAG, "Request: " + jsonLoginRequest);
         queue.add(jsonObjectRequest);
-
     }
 
-    public void succesfullySignedToServer(LoginResponse response){
-        toast(response.getGreeting());
-        if(response.isLoginSuccesful()){
-            if(response.partOfTeam)
-            {
+    public void succesfullySignedToServer(LoginResponse response) {
+        toast(response.getMessage());
+        if (response.isSuccesful()) {
+            if (response.isPartOfTeam()) {
+                Intent i = new Intent(this, ProjectScreen_.class);
+                i.putExtra("projectId",response.getProjectId());
+                toast("Is part of a team :D " );
+                startActivity(i);
+            } else {
 
-            }else{
-                Intent i = new Intent(this,InvitesScreen_.class);
-                i.putExtra("email",email);
+                Intent i = new Intent(this, InvitesScreen_.class);
+                toast("Not part of a team, join one or create one here");
                 startActivity(i);
             }
+        }else{
+            toast(response.getMessage());
         }
     }
 
 
-    public void toast(String t ){
-        Toast.makeText(getApplicationContext(),t,Toast.LENGTH_SHORT).show();
+
+    public void toast(String t) {
+        Toast.makeText(getApplicationContext(), t, Toast.LENGTH_SHORT).show();
     }
+
+    public void getRegistrationToken(){
+        startService(new Intent(this, MyRegistrationIntentService.class));
+    }
+
+
 
 
 
