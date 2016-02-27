@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_current_sprint"
+            android:icon="@drawable/logo"
+            android:title="Current Sprints" />
+
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/logo"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_backlog"
+            android:icon="@drawable/logo"
+            android:title="Backlog" />
+        <item
+            android:id="@+id/nav_sprints"
+            android:icon="@drawable/logo"
+            android:title="Sprints" />
+        <item
+            android:id="@+id/nav_documents"
+            android:icon="@drawable/logo"
+            android:title="Documents" />
+        <item
+            android:id="@+id/nav_reports"
+            android:icon="@drawable/logo"
+            android:title="Reports" />
+        <item
+            android:id="@+id/nav_info"
+            android:icon="@drawable/logo"
+            android:title="Info" />
+    </group>
+
+
+
+</menu>

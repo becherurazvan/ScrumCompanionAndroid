@@ -1,14 +1,17 @@
 package Requests;
 
+
 /**
  * Created by rbech on 2/6/2016.
  */
 public class SetTokenRequest extends Request{
     String authCode;
+    String gcmToken;
 
-    public SetTokenRequest(String tokenId, String authCode) {
+    public SetTokenRequest(String tokenId, String authCode,String gcmToken) {
         super(tokenId);
         this.authCode = authCode;
+        this.gcmToken = gcmToken;
     }
 
     public SetTokenRequest(){
@@ -20,5 +23,9 @@ public class SetTokenRequest extends Request{
 
     public String getAuthCode() {
         return authCode;
+    }
+
+    public String getGcmToken() {
+        return gcmToken;
     }
 }

@@ -30,6 +30,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.drive.Drive;
 
+import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
@@ -59,10 +60,25 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
     TextView joinButton;
 
 
-    public static final String CREATE_PROJECT_URL = "http://10.32.188.82:4567/project/create";
-    public static final String JOIN_PROJECT_URL = "http://10.32.188.82:4567/project/join";
-    public static final String SET_TOKEN_URL = "http://10.32.188.82:4567/user/set_token";
-    public static final String SERVER_CLIENT_ID = "735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com";
+
+//
+//    public static final String CREATE_PROJECT_URL = "http://10.32.188.82:4567/project/create";
+//    public static final String JOIN_PROJECT_URL = "http://10.32.188.82:4567/project/join";
+//    public static final String SET_TOKEN_URL = "http://10.32.188.82:4567/user/set_token";
+//
+
+
+    //HEROKU
+    public static final String CREATE_PROJECT_URL = "https://scrum-companion.herokuapp.com/project/create";
+    public static final String JOIN_PROJECT_URL = "https://scrum-companion.herokuapp.com/project/join";
+    public static final String SET_TOKEN_URL = "https://scrum-companion.herokuapp.com/user/set_token";
+
+
+    //public static final String SERVER_CLIENT_ID = "735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com"; //GOOD ONE
+    public static final String SERVER_CLIENT_ID = "735068003543-nl7oj4vo98s5nnabv5q13pgo688hkj3l.apps.googleusercontent.com"; // script
+
+
+
     private static final int RC_SIGN_IN = 8001;
 
     public static final String TAG = "InvitesActivity:";
@@ -70,6 +86,11 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
     RequestQueue queue;
     GoogleSignInAccount acct;
     private GoogleApiClient mGoogleApiClientDRIVE;
+
+    int projectId;
+
+    @App
+    MyApp app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +110,8 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
 
         GoogleSignInOptions gso2 = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope("https://www.googleapis.com/auth/drive"))
+                .requestScopes(new Scope("https://www.googleapis.com/auth/documents"))
+                .requestScopes(new Scope("https://www.googleapis.com/auth/script.external_request"))
                 .requestServerAuthCode(SERVER_CLIENT_ID, true)// WEB CLIENT ID HERE, ANDROID CLIENT ID IN JSon
                 .requestIdToken(SERVER_CLIENT_ID)
                 .requestEmail()
@@ -217,7 +240,7 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
 
         String tokenId = acct.getIdToken();
 
-        SetTokenRequest setTokenRequest = new SetTokenRequest(tokenId, acct.getServerAuthCode());
+        SetTokenRequest setTokenRequest = new SetTokenRequest(tokenId, acct.getServerAuthCode(),app.getGcmToken());
         JSONObject jsonBody = new JSONObject(objectMapper.writeValueAsString(setTokenRequest));
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, SET_TOKEN_URL, jsonBody, new Response.Listener<JSONObject>() {
             @Override
@@ -226,6 +249,14 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
 
                 try {
                     Requests.Response rsp = objectMapper.readValue(response.toString(),Requests.Response.class);
+                    if(!rsp.isSuccesful()){
+                        try {
+                            sendTokens();
+                            Log.i(TAG,"Error ocurred, trying again");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -244,14 +275,15 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
     }
 
     public void projectCreated(CreateProjectResponse project) {
-        Intent i = new Intent(this, ProjectScreen_.class);
+        Intent i = new Intent(this, MainScreen_.class);
+        i.putExtra("projectId",project.getProjectId());
         startActivity(i);
     }
 
     public void joinProject() throws JsonProcessingException, JSONException {
         String iCode = invitationCode.getText().toString();
 
-        final JoinProjectRequest joinProjectRequest = new JoinProjectRequest("", iCode);
+        final JoinProjectRequest joinProjectRequest = new JoinProjectRequest(app.getTokenId(), iCode);
         String jsonJoinProjectRequest = objectMapper.writeValueAsString(joinProjectRequest);
 
         JSONObject jsonBody = new JSONObject(jsonJoinProjectRequest);
@@ -292,9 +324,8 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
     public void joinedProject(Requests.Response response) {
         if (response.isSuccesful()) {
             Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(this, ProjectScreen_.class);
-            int posOfUnderline = invitationCode.getText().toString().indexOf("_");
-            i.putExtra("projectId", invitationCode.getText().toString().substring(posOfUnderline, invitationCode.getText().toString().length()));
+            Intent i = new Intent(this, MainScreen_.class);
+            i.putExtra("projectId", invitationCode.getText().toString());
             startActivity(i);
         } else {
             Toast.makeText(getApplicationContext(), "UNSUCCESFULL: " + response.getMessage(), Toast.LENGTH_SHORT).show();

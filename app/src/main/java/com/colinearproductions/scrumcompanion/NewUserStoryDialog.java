@@ -5,43 +5,50 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import Scrum.Task;
+import Scrum.UserStory;
 
-public class SetTextDialog extends DialogFragment implements View.OnClickListener{
+/**
+ * Created by rbech on 2/23/2016.
+ */
+public class NewUserStoryDialog extends DialogFragment implements View.OnClickListener {
 
-    EditText projectName;
+    EditText taskDescription;
     TextView ok;
     TextView cancel;
-    Communicator communicator;
+    UserStoryCommunicator communicator;
+
+    public NewUserStoryDialog(){
+
+    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        communicator= (Communicator) activity;
+        communicator= (UserStoryCommunicator) activity;
+        Log.i("Dialog:", activity.getTitle().toString());
     }
 
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.set_text_dialog,null);
-        ok =(TextView) view.findViewById(R.id.okButton);
-        cancel = (TextView) view.findViewById(R.id.cancelButton);
-        projectName = (EditText) view.findViewById(R.id.projectNameText);
+        View view = inflater.inflate(R.layout.new_user_story_dialog,null);
+        ok =(TextView) view.findViewById(R.id.new_US_dialog_ok);
+        cancel = (TextView) view.findViewById(R.id.new_US_dialog_cancel);
+        taskDescription = (EditText) view.findViewById(R.id.new_US_description_text);
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
 
         return view;
-
-
-        //return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -50,21 +57,19 @@ public class SetTextDialog extends DialogFragment implements View.OnClickListene
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }
-
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.okButton){
-            Toast.makeText(getActivity(),"Ok pressed",Toast.LENGTH_SHORT).show();
-            String projectNameText = projectName.getText().toString();
-            communicator.onDialogMessage("OK:"+projectName.getText());
+        if(v.getId()==R.id.new_US_dialog_ok){
+            Toast.makeText(getActivity(), "Ok pressed", Toast.LENGTH_SHORT).show();
+            String description = taskDescription.getText().toString();
+            communicator.newUserStoryCreated(new UserStory(description));
             dismiss();
         }else{
-            Toast.makeText(getActivity(),"Cancel pressed",Toast.LENGTH_SHORT).show();
             dismiss();
         }
     }
 
-    interface Communicator{
-        public void onDialogMessage(String message);
+    interface UserStoryCommunicator{
+        public void newUserStoryCreated(UserStory userStory);
     }
 }

@@ -1,6 +1,6 @@
 package Requests;
 
-import Entities.Project;
+import Entities.ProjectInfo;
 
 /**
  * Created by rbech on 1/26/2016.
@@ -11,12 +11,6 @@ public class CreateProjectResponse{
     String projectId;
     String invitationCode;
 
-    public CreateProjectResponse(Project p) {
-        this.projectName = p.getTitle();
-        this.projectOwner = p.getLeaderEmail();
-        this.projectId = p.getId();
-        this.invitationCode = p.getInvitationCode();
-    }
 
     public CreateProjectResponse() {}
 

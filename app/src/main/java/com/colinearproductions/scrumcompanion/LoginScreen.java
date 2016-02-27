@@ -24,10 +24,8 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.drive.Drive;
 
+import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
@@ -36,9 +34,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 
+import Requests.LoginRequest;
 import Requests.LoginResponse;
 import VolleyClasses.VolleySingleton;
 import gcm.MyRegistrationIntentService;
+import gcm.MyRegistrationIntentService_;
 
 
 @EActivity
@@ -54,22 +54,41 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     @ViewById(R.id.sign_in_button)
     SignInButton signInButton;
 
-    public static final String LOGIN_URL = "http://10.32.188.82:4567/user/login";
-    public static final String SERVER_CLIENT_ID = "735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com";
+//    public static final String LOGIN_URL = "http://10.32.188.82:4567/user/login";
+   public static final String LOGIN_URL = "https://scrum-companion.herokuapp.com/user/login";
+
+
+
+
+    //public static final String SERVER_CLIENT_ID = "735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com"; //GOOD ONE 735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com
+    public static final String SERVER_CLIENT_ID = "735068003543-nl7oj4vo98s5nnabv5q13pgo688hkj3l.apps.googleusercontent.com"; // script
+
+
     private static final String TAG = "SignInActivity";
     private static final String s = "S";
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleApiClient mGoogleApiClient;
 
+    GoogleSignInAccount acct;
+
+
     RequestQueue queue;
     ObjectMapper objectMapper;
+
+    @App
+    MyApp app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Intent i = new Intent(getApplicationContext(),MainScreen_.class);
+        // startActivity(i);
+
+
         getRegistrationToken(); // GCM
+        app.setCurrentState(MyApp.LOGIN_SCREEN_STATE);
 
         setContentView(R.layout.activity_login_screen);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -81,7 +100,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 //.requestScopes(new Scope("https://www.googleapis.com/auth/drive"))
                 //.requestServerAuthCode("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com", true)// WEB CLIENT ID HERE, ANDROID CLIENT ID IN JSon
-                .requestIdToken("735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com")
+                .requestIdToken(SERVER_CLIENT_ID)
                 .requestEmail()
                 .build();
 
@@ -94,6 +113,8 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_WIDE);
         signInButton.setScopes(gso.getScopeArray());
+
+        app.printText("Initialized login screen");
 
     }
 
@@ -126,7 +147,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-            GoogleSignInAccount acct = result.getSignInAccount();
+            acct = result.getSignInAccount();
             Log.i(TAG, acct.getDisplayName() + " EMAIL: " + acct.getEmail() + " server auth code: " + acct.getServerAuthCode() + " Authentication token " + acct.getIdToken());
             try {
                 succesfullySignedIn(acct);
@@ -168,6 +189,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
         JSONObject jsonBody = new JSONObject(jsonLoginRequest);
         String url = LOGIN_URL;
 
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -190,9 +212,11 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
 
     public void succesfullySignedToServer(LoginResponse response) {
         toast(response.getMessage());
+        app.setEmail(acct.getEmail());
+        app.setTokenId(acct.getIdToken());
         if (response.isSuccesful()) {
             if (response.isPartOfTeam()) {
-                Intent i = new Intent(this, ProjectScreen_.class);
+                Intent i = new Intent(this, MainScreen_.class);
                 i.putExtra("projectId",response.getProjectId());
                 toast("Is part of a team :D " );
                 startActivity(i);
@@ -214,7 +238,7 @@ public class LoginScreen extends AppCompatActivity implements GoogleApiClient.On
     }
 
     public void getRegistrationToken(){
-        startService(new Intent(this, MyRegistrationIntentService.class));
+        startService(new Intent(this, MyRegistrationIntentService_.class));
     }
 
 
