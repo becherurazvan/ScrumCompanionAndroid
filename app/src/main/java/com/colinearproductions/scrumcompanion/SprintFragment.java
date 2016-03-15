@@ -16,7 +16,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import Entities.Project;
 import RecyclerViewHolders.SprintListViewHolder;
@@ -40,9 +43,14 @@ public class SprintFragment extends Fragment implements View.OnClickListener {
     Button newSprintButton;
 
     private OnSprintFragmentInteraction mListener;
+    private SprintListViewHolder.OnSprintActionButtonClickedListener onSprintActionButtonClickedListener;
 
     public SprintFragment() {
         // Required empty public constructor
+    }
+
+    public void setOnSprintActionButtonClickedListener(SprintListViewHolder.OnSprintActionButtonClickedListener listener){
+        this.onSprintActionButtonClickedListener = listener;
     }
 
 
@@ -56,7 +64,7 @@ public class SprintFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sprint,container,false);
         rootView.setTag("SprintsListFragment");
-        adapter = new SprintListViewHolder();
+        adapter = new SprintListViewHolder(onSprintActionButtonClickedListener);
 
 
         recyclerView = (RecyclerView)rootView.findViewById(R.id.sprints_recycler_view);
@@ -73,7 +81,6 @@ public class SprintFragment extends Fragment implements View.OnClickListener {
         newSprintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 mListener.onNewSprintButtonClicked(startDate.getText().toString(),endDate.getText().toString());
                 startDate.setText("");
                 endDate.setText("");
@@ -90,6 +97,12 @@ public class SprintFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
+    public void update(){
+        MainScreen a = (MainScreen)getActivity();
+        Project p = a.getProject();
+        adapter.setSprints(p.getProductBacklog().getSprints());
+
+    }
 
 
     @Override
@@ -113,6 +126,9 @@ public class SprintFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         if(v.getId()==R.id.start_date_edit_text){
             DatePickerFragment newFragment = new DatePickerFragment();
+            newFragment.setMinDate(adapter.getMinDate());
+
+
             newFragment.setListener(new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -127,7 +143,27 @@ public class SprintFragment extends Fragment implements View.OnClickListener {
             newFragment.show(getActivity().getFragmentManager(),"datePicker");
 
         }else if(v.getId()==R.id.end_date_edit_text){
+            if(startDate.getText().toString().matches("")) {
+                ((MainScreen)getActivity()).toast("Pick a start date first");
+                return;
+            }
+
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
+
+            try {
+                calendar.setTime(simpleDateFormat.parse(startDate.getText().toString()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
             DatePickerFragment newFragment = new DatePickerFragment();
+            newFragment.setMinDate(calendar);
+
+;
+
+
             newFragment.setListener(new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

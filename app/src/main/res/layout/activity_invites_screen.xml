@@ -5,87 +5,128 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.colinearproductions.scrumcompanion.InvitesScreen"
-    android:background="#ffd83b"
-    android:padding="10dp"
-    android:gravity="center">
+    android:background="@color/colorPrimaryWhite"
+    android:padding="0dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Got an invitation code?"
-        android:id="@+id/invitationsText"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#606061"
-        android:singleLine="true"
-        android:layout_marginTop="10dp"
-        android:textSize="27dp" />
 
-    <EditText
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/invitationCodeEditText"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#4f4f4f"
-        android:textSize="50sp"
-        android:textAlignment="center"
-        android:hint="INV_0000"
-        android:layout_marginBottom="10dp" />
+        card_view:cardElevation="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="center_horizontal"
-        android:background="#ffffff" >
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Join"
-            android:id="@+id/joinButton"
-            android:layout_gravity="center"
-            android:textColor="#606061"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="23dp" />
-    </FrameLayout>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1">
 
-    <View
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Got an invitation code?"
+                android:id="@+id/textView5"
+                android:textColor="@color/colorPrimaryDark"
+                android:textAlignment="center"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:textSize="25sp" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/invitation_code"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorHint"
+                android:hint="0000"
+                android:textAlignment="center"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="If you are part of a team and want to join a project, ask your leader for the project code and enter it here"
+                android:id="@+id/textView6"
+                android:textColor="@color/colorPrimary"
+                android:textAlignment="center"
+                android:layout_margin="10dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Join Project"
+                android:id="@+id/join_project_button"
+                android:background="@color/colorPrimary"
+                android:layout_margin="10dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view2"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@android:color/black"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Or create a new project"
-        android:id="@+id/createProjectLabelText"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#606061"
-        android:singleLine="true"
-        android:layout_marginTop="10dp"
-        android:textSize="27dp"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="5dp"
+        card_view:cardElevation="5dp">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_gravity="center_horizontal"
-        android:background="#ffffff">
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Create a new\nproject"
-            android:id="@+id/createProjectText"
-            android:layout_gravity="center"
-            android:textColor="#606061"
-            android:gravity="center_vertical|center_horizontal"
-            android:textSize="23dp" />
-    </FrameLayout>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Are you the team leader?"
+                android:textColor="@color/colorPrimaryDark"
+                android:textAlignment="center"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:textSize="25sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="If you are the leader of a team, create a project and invite the rest of the team with the generated invite code!"
+                android:textColor="@color/colorPrimary"
+                android:textAlignment="center"
+                android:layout_margin="10dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create Project"
+                android:background="@color/colorPrimary"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:id="@+id/create_project_button" />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 </LinearLayout>

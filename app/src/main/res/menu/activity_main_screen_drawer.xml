@@ -5,33 +5,33 @@
 
         <item
             android:id="@+id/nav_current_sprint"
-            android:icon="@drawable/logo"
-            android:title="Current Sprints" />
+            android:icon="@drawable/sports"
+            android:title="Current Sprint" />
 
         <item
             android:id="@+id/nav_dashboard"
-            android:icon="@drawable/logo"
-            android:title="Dashboard" />
+            android:icon="@drawable/signs"
+            android:title="Activity Feed" />
         <item
             android:id="@+id/nav_backlog"
-            android:icon="@drawable/logo"
-            android:title="Backlog" />
+            android:icon="@drawable/arrows"
+            android:title="Product Backlog" />
         <item
             android:id="@+id/nav_sprints"
-            android:icon="@drawable/logo"
+            android:icon="@drawable/sport"
             android:title="Sprints" />
         <item
             android:id="@+id/nav_documents"
-            android:icon="@drawable/logo"
+            android:icon="@drawable/note"
             android:title="Documents" />
         <item
             android:id="@+id/nav_reports"
-            android:icon="@drawable/logo"
+            android:icon="@drawable/business"
             android:title="Reports" />
         <item
             android:id="@+id/nav_info"
-            android:icon="@drawable/logo"
-            android:title="Info" />
+            android:icon="@drawable/three"
+            android:title="Settings" />
     </group>
 
 

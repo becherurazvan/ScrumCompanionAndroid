@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    card_view:cardCornerRadius="1dp"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="5dp">
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Task description will look prety much like this placeholder text, ikr"
+        android:id="@+id/csspi_description"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:id="@+id/csspi_assiged_to"
+            android:textSize="15sp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Points: 5"
+            android:id="@+id/csspi_points"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Back"
+            android:id="@+id/csspi_back_btn"
+            android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/colorSpecialRed" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Forward"
+            android:id="@+id/csspi_next_btn"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/colorSpecialGreen" />
+    </LinearLayout>
+</LinearLayout>
+
+</android.support.v7.widget.CardView>

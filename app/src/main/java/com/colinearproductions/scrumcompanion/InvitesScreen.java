@@ -1,15 +1,15 @@
 package com.colinearproductions.scrumcompanion;
 
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,7 +27,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.drive.Drive;
 
 import org.androidannotations.annotations.App;
@@ -46,39 +48,36 @@ import VolleyClasses.VolleySingleton;
 
 
 @EActivity
-public class InvitesScreen extends AppCompatActivity implements View.OnClickListener, SetTextDialog.Communicator, GoogleApiClient.OnConnectionFailedListener {
+public class InvitesScreen extends AppCompatActivity implements View.OnClickListener, CreateProjectDialog.Communicator, GoogleApiClient.OnConnectionFailedListener {
 
-    @ViewById(R.id.createProjectText)
-    TextView createProject;
-    @ViewById(R.id.invitationsText)
-    TextView invitationsText;
-    @ViewById(R.id.invitationCodeEditText)
+
+    @ViewById(R.id.invitation_code)
     EditText invitationCode;
-    @ViewById(R.id.createProjectLabelText)
-    TextView createProjectLabel;
-    @ViewById(R.id.joinButton)
-    TextView joinButton;
+    @ViewById(R.id.create_project_button)
+    Button createProjectButton;
+    @ViewById(R.id.join_project_button)
+    Button joinButton;
 
+
+
+
+    public static final String CREATE_PROJECT_URL = "http://10.32.188.82:4567/project/create";
+    public static final String JOIN_PROJECT_URL = "http://10.32.188.82:4567/project/join";
+    public static final String SET_TOKEN_URL = "http://10.32.188.82:4567/user/set_token";
 
 
 //
-//    public static final String CREATE_PROJECT_URL = "http://10.32.188.82:4567/project/create";
-//    public static final String JOIN_PROJECT_URL = "http://10.32.188.82:4567/project/join";
-//    public static final String SET_TOKEN_URL = "http://10.32.188.82:4567/user/set_token";
+//    //HEROKU
+//    public static final String CREATE_PROJECT_URL = "https://scrum-companion.herokuapp.com/project/create";
+//    public static final String JOIN_PROJECT_URL = "https://scrum-companion.herokuapp.com/project/join";
+//    public static final String SET_TOKEN_URL = "https://scrum-companion.herokuapp.com/user/set_token";
 //
-
-
-    //HEROKU
-    public static final String CREATE_PROJECT_URL = "https://scrum-companion.herokuapp.com/project/create";
-    public static final String JOIN_PROJECT_URL = "https://scrum-companion.herokuapp.com/project/join";
-    public static final String SET_TOKEN_URL = "https://scrum-companion.herokuapp.com/user/set_token";
-
 
     //public static final String SERVER_CLIENT_ID = "735068003543-qnqng9c8jpg13q83hu1h3aebjkogapp3.apps.googleusercontent.com"; //GOOD ONE
     public static final String SERVER_CLIENT_ID = "735068003543-nl7oj4vo98s5nnabv5q13pgo688hkj3l.apps.googleusercontent.com"; // script
 
 
-
+    ProgressDialog progressDialog;
     private static final int RC_SIGN_IN = 8001;
 
     public static final String TAG = "InvitesActivity:";
@@ -87,7 +86,6 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
     GoogleSignInAccount acct;
     private GoogleApiClient mGoogleApiClientDRIVE;
 
-    int projectId;
 
     @App
     MyApp app;
@@ -95,15 +93,12 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_invites_screen);
-        setFonts();
+        setContentView(R.layout.activity_invites_screen);;
 
-        createProject.setOnClickListener(this);
+        createProjectButton.setOnClickListener(this);
+        joinButton.setOnClickListener(this);
         objectMapper = new ObjectMapper();
         queue = VolleySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
-        invitationCode = (EditText) findViewById(R.id.invitationCodeEditText);
-
-
 
 
 
@@ -131,8 +126,11 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        if (mGoogleApiClientDRIVE != null)
+
+        if (mGoogleApiClientDRIVE != null) {
+            showProgressDialog();
             mGoogleApiClientDRIVE.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+        }
     }
 
     @Override
@@ -150,6 +148,7 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             Log.i(TAG,"Succesfully got the authentication tokens");
             acct = result.getSignInAccount();
+            hideProgressDialog();
             try {
                 sendTokens();
             } catch (JsonProcessingException e) {
@@ -165,14 +164,12 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.createProjectText:
+            case R.id.create_project_button:
                 FragmentManager manager = getFragmentManager();
-                SetTextDialog setTextDialog = new SetTextDialog();
-                setTextDialog.show(manager, "set_text_dialog");
+                CreateProjectDialog createProjectDialog = new CreateProjectDialog();
+                createProjectDialog.show(manager, "create_project_dialog");
                 break;
-            case R.id.joinButton:
-
-
+            case R.id.join_project_button:
                 try {
                     joinProject();
                 } catch (JsonProcessingException e) {
@@ -250,6 +247,7 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
                 try {
                     Requests.Response rsp = objectMapper.readValue(response.toString(),Requests.Response.class);
                     if(!rsp.isSuccesful()){
+                        hideProgressDialog();
                         try {
                             sendTokens();
                             Log.i(TAG,"Error ocurred, trying again");
@@ -269,14 +267,14 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
                 Log.i(TAG, "Erorr" + error.toString());
             }
         });
-        Log.i("InvitesScreen", "Request: " +jsonBody.toString());
+        Log.i("InvitesScreen", "Request: " + jsonBody.toString());
         queue.add(jsonObjectRequest);
 
     }
 
     public void projectCreated(CreateProjectResponse project) {
         Intent i = new Intent(this, MainScreen_.class);
-        i.putExtra("projectId",project.getProjectId());
+        i.putExtra("projectId", project.getProjectId());
         startActivity(i);
     }
 
@@ -333,18 +331,31 @@ public class InvitesScreen extends AppCompatActivity implements View.OnClickList
     }
 
 
-    public void setFonts() {
-        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/roboto_thin.ttf");
-        createProject.setTypeface(font);
-        invitationsText.setTypeface(font);
-        invitationCode.setTypeface(font);
-        createProjectLabel.setTypeface(font);
-        joinButton.setOnClickListener(this);
-
-    }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
+    public void showProgressDialog(){
+        if(progressDialog== null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Loading");
+            progressDialog.setMessage("Wait while loading...");
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+        }
+        progressDialog.show();
+    }
+
+    public void hideProgressDialog(){
+        if(progressDialog!=null && progressDialog.isShowing()){
+            progressDialog.hide();
+        }
+    }
+
+
+
+
+
 }

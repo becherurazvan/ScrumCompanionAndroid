@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.colinearproductions.scrumcompanion.SprintFragment">
+    tools:context="com.colinearproductions.scrumcompanion.SprintFragment"
+    android:background="@color/colorPrimaryWhite">
 
 
     <android.support.v7.widget.RecyclerView
@@ -11,54 +12,49 @@
         android:layout_height="wrap_content"
         android:id="@+id/sprints_recycler_view"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
         android:layout_above="@+id/add_sprint_button"
         android:layout_weight="1" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:background="@android:color/darker_gray"/>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2">
+        android:layout_weight="2.5">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Start Date"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Add a new sprint"
             android:id="@+id/textView3"
-            android:layout_gravity="center_horizontal"
-            android:textSize="16dp"
-            android:layout_weight="1" />
+            android:textColor="@color/colorPrimary"
+            android:textAlignment="center"
+            android:textSize="12sp" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:ems="10"
             android:id="@+id/start_date_edit_text"
             android:layout_gravity="center_horizontal"
             android:focusable="false"
+            android:ems="10"
             android:layout_weight="1"
-            android:hint="touch to set date"
-            android:textAlignment="center" />
+            android:hint="touch to set Start date"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textColorHint="@color/colorPrimaryDark"
+            />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="End Date"
-            android:id="@+id/textView4"
-            android:layout_gravity="center_horizontal"
-            android:textSize="16dp"
-            android:layout_weight="1" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -68,14 +64,16 @@
             android:ems="10"
             android:id="@+id/end_date_edit_text"
             android:layout_weight="1"
-            android:hint="touch to set date"
-            android:textAlignment="center" />
+            android:hint="touch to set End date"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textColorHint="@color/colorPrimaryDark" />
     </LinearLayout>
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="New Sprint"
+        android:text="+"
         android:id="@+id/add_sprint_button"
         android:focusable="false"
         android:layout_alignParentBottom="true"
@@ -83,6 +81,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="#ff3535"
-        android:enabled="false" />
+        android:background="@color/colorPrimary"
+        android:enabled="false"
+        android:textSize="25sp"
+        android:textColor="@color/colorPrimaryWhite" />
 </LinearLayout>

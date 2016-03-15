@@ -14,6 +14,12 @@ public class DatePickerFragment extends DialogFragment {
 
     DatePickerDialog.OnDateSetListener listener;
 
+    Calendar minDate;
+
+    public void setMinDate(Calendar calendar){
+        this.minDate = calendar;
+    }
+
     public void setListener(DatePickerDialog.OnDateSetListener listener){
         this.listener = listener;
     }
@@ -27,7 +33,18 @@ public class DatePickerFragment extends DialogFragment {
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         // Create a new instance of DatePickerDialog and return it
-        return new DatePickerDialog(getActivity(), listener, year, month, day);
+
+        DatePickerDialog datePickerDialog  = new DatePickerDialog(getActivity(), listener, year, month, day);
+        DatePicker datePicker= datePickerDialog.getDatePicker();
+
+        if(minDate==null){
+            datePicker.setMinDate(c.getTimeInMillis());
+        }else{
+            datePicker.setMinDate(minDate.getTimeInMillis());
+        }
+
+
+        return datePickerDialog;
     }
 
 

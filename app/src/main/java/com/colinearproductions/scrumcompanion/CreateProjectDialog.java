@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class SetTextDialog extends DialogFragment implements View.OnClickListener{
+public class CreateProjectDialog extends DialogFragment implements View.OnClickListener{
 
     EditText projectName;
     TextView ok;
@@ -31,12 +31,13 @@ public class SetTextDialog extends DialogFragment implements View.OnClickListene
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.set_text_dialog,null);
+        View view = inflater.inflate(R.layout.create_project_dialog,null);
         ok =(TextView) view.findViewById(R.id.okButton);
         cancel = (TextView) view.findViewById(R.id.cancelButton);
         projectName = (EditText) view.findViewById(R.id.projectNameText);
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
+
 
         return view;
 

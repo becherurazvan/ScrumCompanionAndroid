@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.design.widget.CoordinatorLayout
+android:id="@+id/main_content"
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/backlog_recycler_view"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1" />
+<android.support.v7.widget.RecyclerView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/backlog_recycler_view"
+    android:layout_gravity="center_horizontal"
+    android:layout_weight="1"
+    android:background="@color/colorPrimaryWhite" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="Add New User Story"
-        android:minHeight="0dp"
-        android:minWidth="0dp"
-        android:id="@+id/add_new_user_story_button"
-        android:textColor="#383838"
-        android:background="#ffdf3e"
-        android:textSize="20dp" />
-</LinearLayout>
+
+<android.support.design.widget.FloatingActionButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|right"
+    android:layout_margin="16dp"
+    android:src="@drawable/plus"
+
+    app:layout_anchorGravity="bottom|right|end"
+    android:id="@+id/backlog_fab" />
+
+</android.support.design.widget.CoordinatorLayout>

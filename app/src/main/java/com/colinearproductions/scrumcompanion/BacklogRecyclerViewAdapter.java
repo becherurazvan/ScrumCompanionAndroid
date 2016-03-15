@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,16 +34,20 @@ import Helper.ItemTouchHelperViewHolder;
 import Scrum.UserStory;
 
 
-public class RecyclerListAdapterSwipableBacklog extends RecyclerView.Adapter<RecyclerListAdapterSwipableBacklog.ItemViewHolder> {
+public class BacklogRecyclerViewAdapter extends RecyclerView.Adapter<BacklogRecyclerViewAdapter.ItemViewHolder> {
 
     private final List<UserStory> mItems = new ArrayList<>();
-
     FragmentManager fragmentManager;
 
-    public RecyclerListAdapterSwipableBacklog(FragmentManager fragmentManager) {
+
+
+    public BacklogRecyclerViewAdapter(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
 
     }
+
+
+
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -54,7 +59,7 @@ public class RecyclerListAdapterSwipableBacklog extends RecyclerView.Adapter<Rec
     @Override
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
         holder.description.setText(mItems.get(position).getDescription());
-        holder.points.setText("Points: " + mItems.get(position).getStoryPoints());
+        holder.points.setText("Points: " + mItems.get(position).countSotryPoints());
         holder.setUserStory(mItems.get(position));
     }
 
@@ -65,10 +70,11 @@ public class RecyclerListAdapterSwipableBacklog extends RecyclerView.Adapter<Rec
 
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements
-            ItemTouchHelperViewHolder, View.OnClickListener {
+            View.OnClickListener {
 
         public final TextView description;
         public final TextView points;
+        public final TextView addToSprintButton;
         public UserStory story;
         FragmentManager fragmentManager;
 
@@ -76,6 +82,8 @@ public class RecyclerListAdapterSwipableBacklog extends RecyclerView.Adapter<Rec
             super(itemView);
             itemView.setOnClickListener(this);
             this.fragmentManager = fragmentManager;
+            addToSprintButton = (TextView) itemView.findViewById(R.id.add_US_to_current_sprint_button);
+            addToSprintButton.setOnClickListener(this);
             points = (TextView) itemView.findViewById(R.id.user_story_list_points_text);
             description = (TextView) itemView.findViewById(R.id.user_story_list_description);
         }
@@ -85,46 +93,32 @@ public class RecyclerListAdapterSwipableBacklog extends RecyclerView.Adapter<Rec
         }
 
         @Override
-        public void onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY);
-        }
-
-        @Override
-        public void onItemClear() {
-            itemView.setBackgroundColor(0);
-        }
-
-        @Override
         public void onClick(View v) {
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            UserStoryFragment fragment = new UserStoryFragment();
-            fragment.setUserStory(story);
-            transaction.replace(R.id.main_frame_layout, fragment, MainScreen.USER_STORY_FRAGMENT_TAG);
-            transaction.addToBackStack(MainScreen.USER_STORY_FRAGMENT_TAG);
-            transaction.commit();
+
+            if(v.getId()==addToSprintButton.getId()){
+                BacklogFragment backlogFragment = (BacklogFragment) fragmentManager.findFragmentByTag(MainScreen.BACKLOG_FRAGMENT_TAG);
+                ((MainScreen) backlogFragment.getActivity()).addUserStoryToSprint(story);
+            }else {
+
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                UserStoryFragment fragment = new UserStoryFragment();
+                fragment.setUserStory(story);
+                transaction.replace(R.id.main_frame_layout, fragment, MainScreen.USER_STORY_FRAGMENT_TAG);
+                transaction.addToBackStack(MainScreen.USER_STORY_FRAGMENT_TAG);
+                transaction.commit();
+
+            }
+
 
         }
 
 
-    }
-
-
-
-    public void addItem(UserStory s) {
-        mItems.add(s);
-        this.notifyDataSetChanged();
     }
 
     public void addAllItems(ArrayList<UserStory> stories) {
         mItems.clear();
         mItems.addAll(stories);
-        this.notifyDataSetChanged();
+       notifyDataSetChanged();
     }
 
-    public void updateStoryPoints(){
-        for(UserStory s:mItems){
-            s.refreshStoryPoints();
-        }
-        notifyDataSetChanged();
-    }
 }

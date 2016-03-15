@@ -3,6 +3,8 @@ package com.colinearproductions.scrumcompanion;
 import android.app.Application;
 import android.util.Log;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import org.androidannotations.annotations.EApplication;
 
 import Entities.Project;
@@ -15,8 +17,9 @@ public class MyApp  extends Application{
     String tokenId;
     String currentState;
     String gcmToken;
+    String username;
 
-    Project project;
+    GoogleApiClient mGoogleApiClient;
 
 
     public static String LOGIN_SCREEN_STATE ="LOGIN";
@@ -44,6 +47,12 @@ public class MyApp  extends Application{
         return email!=null;
     }
 
+    public String getUsername(){return username;}
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getTokenId() {
         return tokenId;
     }
@@ -61,19 +70,8 @@ public class MyApp  extends Application{
         this.gcmToken = gcmToken;
     }
 
-    public String getCurrentState() {
-        return currentState;
+    public void setApiClient(GoogleApiClient mGoogleApiClient){
+        this.mGoogleApiClient = mGoogleApiClient;
     }
 
-    public void setProject(Project project){
-        this.project = project;
-    }
-
-    public void updateBacklog(Project project){
-        this.project = project;
-    }
-
-    public Project getProject(){
-        return project;
-    }
 }

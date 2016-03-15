@@ -1,11 +1,9 @@
 package RecyclerViewHolders;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.colinearproductions.scrumcompanion.R;
@@ -13,7 +11,6 @@ import com.colinearproductions.scrumcompanion.R;
 import java.util.ArrayList;
 
 import Scrum.Task;
-import Scrum.UserStory;
 
 /**
  * Created by rbech on 2/23/2016.
@@ -21,15 +18,17 @@ import Scrum.UserStory;
 public class UserStoryTaskHolder extends RecyclerView.Adapter<UserStoryTaskHolder.ViewHolder>{
 
     ArrayList<Task> tasks;
+    TaskEditListener listener;
 
-    public UserStoryTaskHolder(ArrayList<Task> tasks){
+    public UserStoryTaskHolder(ArrayList<Task> tasks,TaskEditListener listener){
         this.tasks = tasks;
+        this.listener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_story_task_item,parent,false);
-        ViewHolder vh = new ViewHolder(v);
+        ViewHolder vh = new ViewHolder(v,listener);
         return vh;
     }
 
@@ -37,8 +36,8 @@ public class UserStoryTaskHolder extends RecyclerView.Adapter<UserStoryTaskHolde
     public void onBindViewHolder(ViewHolder holder, int position) {
         Task t = tasks.get(position);
         holder.setTaks(t);
-        holder.description.setText(t.getTitle());
-        holder.pointsId.setText("ID: " + t.getId() + " Points:" + t.getPoints());
+        holder.description.setText(t.getDescription());
+        holder.pointsId.setText("Points:" + t.getPoints());
     }
 
     @Override
@@ -47,21 +46,28 @@ public class UserStoryTaskHolder extends RecyclerView.Adapter<UserStoryTaskHolde
     }
 
 
+    public void setTasks(ArrayList<Task> task){
+
+        tasks.clear();
+        tasks.addAll(task);
+        notifyDataSetChanged();
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView pointsId;
         TextView description;
-        Button edit;
+        TextView edit;
         Task task;
+        TaskEditListener listener;
 
-        public ViewHolder(View v) {
+        public ViewHolder(View v,TaskEditListener listener) {
             super(v);
-            pointsId = (TextView) v.findViewById(R.id.user_story_task_item_id_points);
+            pointsId = (TextView) v.findViewById(R.id.user_story_task_item_points);
             description = (TextView) v.findViewById(R.id.user_story_task_item_description);
-            edit = (Button) v.findViewById(R.id.user_story_task_item_edit_btn);
+            edit = (TextView) v.findViewById(R.id.user_story_task_item_edit_btn);
             edit.setOnClickListener(this);
-
+            this.listener= listener;
 
 
         }
@@ -72,9 +78,19 @@ public class UserStoryTaskHolder extends RecyclerView.Adapter<UserStoryTaskHolde
 
         @Override
         public void onClick(View v) {
-            Log.i("HEHEHE",task.getTitle());
+           listener.onTaskEditClicked(task);
         }
     }
+
+
+    public interface TaskEditListener
+    {
+        public void onTaskEditClicked(Task t);
+    }
+
+
+
+
 
 
 }

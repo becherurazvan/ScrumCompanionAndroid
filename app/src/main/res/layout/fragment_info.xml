@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.colinearproductions.scrumcompanion.InfoFragment"
+    android:background="@color/colorPrimaryWhite">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Invitation Code: 1234"
+        android:id="@+id/invitation_code_text"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Give this code to your team members so that they can join the project"
+        android:id="@+id/textView4"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/colorPrimary"
+        android:textAlignment="center"
+        android:padding="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Members:"
+        android:id="@+id/textView8"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginTop="20dp"
+        android:padding="5dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/members_recycler_view"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign out"
+        android:id="@+id/sign_out_button"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorSpecialRed"
+        android:padding="5dp"
+        android:layout_margin="5dp" />
+</LinearLayout>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    card_view:cardCornerRadius="1dp"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="5dp">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/csui_layout">
+
+
+        <TextView
+            android:id="@+id/csusi_description_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="As a user\nI want to be able to read my emails\nSo that I can reply"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="5dp"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/csusi_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Subtasks: 2   Points: 3"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="13sp"
+            android:padding="5dp" />
+
+        <ProgressBar
+            android:id="@+id/csusi_progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:indeterminate="false"
+            android:max="100"
+            android:maxHeight="10dip"
+            android:minHeight="10dip"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:progress="50" />
+
+        <TextView
+            android:id="@+id/csusi_remove_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="15dp"
+            android:text="Remove"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorSpecialRed"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="20dp" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
